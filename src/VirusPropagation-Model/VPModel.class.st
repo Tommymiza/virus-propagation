@@ -23,20 +23,32 @@ VPModel class >> prefix [
 ]
 
 { #category : 'as yet unclassified' }
-VPModel >> basicInit: humanRatio with: infectedNb [
-
-	<init>
+VPModel >> basicInitLarge: human with: infectedNb [
 	| infectedPersons safePersons |
 	self
-		createGridNumberOfRows: 20
-		numberOfColumns: 20
+		createGridNumberOfRows: 50
+		numberOfColumns:50
 		neighbourhood: 8
 		closed: true.
 	
-	self createN: ((cells size * humanRatio) rounded) randomlyLocatedEntities: VPPerson.
-	persons do: [ :each | each beSafe ].
+	self createN: human randomlyLocatedEntities: VPPerson.
 	infectedPersons := self selectRandomlyFrom: self persons size: infectedNb.
-	infectedPersons do: [ :each | each beInfected ]
+	infectedPersons do: [ :each | each state: Infected new ]
+	
+]
+
+{ #category : 'as yet unclassified' }
+VPModel >> basicInitSmall: human with: infectedNb [
+	| infectedPersons safePersons |
+	self
+		createGridNumberOfRows: 7
+		numberOfColumns: 7
+		neighbourhood: 8
+		closed: true.
+	
+	self createN: human randomlyLocatedEntities: VPPerson.
+	infectedPersons := self selectRandomlyFrom: self persons size: infectedNb.
+	infectedPersons do: [ :each | each state: Infected new ]
 	
 ]
 
@@ -47,9 +59,15 @@ VPModel >> cells [
 ]
 
 { #category : 'initialize-release' }
-VPModel >> init [
+VPModel >> initLarge [
 	<init>
-	self basicInit: 0.1 with: 1
+	self basicInitLarge: 200 with: 1
+]
+
+{ #category : 'initialize-release' }
+VPModel >> initSmall [
+	<init>
+	self basicInitSmall: 20 with: 1
 ]
 
 { #category : 'initialization' }
